@@ -34,7 +34,7 @@ export default function Home() {
     signMessage(
       { message },
       {
-        onSuccess: (signedMessage) => {
+        onSuccess: () => {
           setCurrentStep(2) // Proceed to Twitter follow step
         },
         onError: (error) => {

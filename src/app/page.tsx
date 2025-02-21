@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Wallet, Twitter, Gift, Loader2 } from 'lucide-react'
+import { Twitter, Gift, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -10,47 +10,47 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { useAccount, useSignMessage } from 'wagmi'
+import { useAccount } from 'wagmi'
 import Link from 'next/link'
 import { CustomConnectButton } from '@/components/CustomConnectButton'
 import toast from 'react-hot-toast'
 
 export default function Home() {
   const { address: connectedAddress, isConnected } = useAccount()
-  const { signMessage } = useSignMessage()
+  //const { signMessageAsync } = useSignMessage()
   const [currentStep, setCurrentStep] = useState<number>(1)
   const [twitterFollowed, setTwitterFollowed] = useState(false)
   const [loadingTwitter, setLoadingTwitter] = useState(false)
   const [isClaiming, setIsClaiming] = useState(false)
 
-  const handleSignMessage = async () => {
-    if (!isConnected || !connectedAddress) {
-      alert('Please connect your wallet first!')
-      return
-    }
+  // const handleSignMessage = async () => {
+  //   if (!isConnected || !connectedAddress) {
+  //     alert('Please connect your wallet first!')
+  //     return
+  //   }
 
-    const message = `Hello ${connectedAddress}, sign this message to prove ownership!`
+  //   const message = `Hello ${connectedAddress}, sign this message to prove ownership!`
 
-    signMessage(
-      { message },
-      {
-        onSuccess: () => {
-          setCurrentStep(2) // Proceed to Twitter follow step
-        },
-        onError: (error) => {
-          console.error('Signing failed', error)
-        },
-      },
-    )
-  }
+  //   await signMessageAsync(
+  //     { message },
+  //     {
+  //       onSuccess: () => {
+  //         setCurrentStep(2) // Proceed to Twitter follow step
+  //       },
+  //       onError: (error) => {
+  //         console.error('Signing failed', error)
+  //       },
+  //     },
+  //   )
+  // }
 
   const handleFollowTwitter = () => {
     setLoadingTwitter(true)
     setTimeout(() => {
       setLoadingTwitter(false)
       setTwitterFollowed(true)
-      setCurrentStep(3) // Proceed to claim step
-    }, 10000) // Simulating API verification delay
+      setCurrentStep(2)
+    }, 10000)
   }
 
   const COOLDOWN_PERIOD = 36 * 60 * 60 * 1000
@@ -119,7 +119,7 @@ export default function Home() {
         <CardHeader>
           <CardTitle className="text-center mb-4">Velkan MON Faucet</CardTitle>
           <CardDescription className="text-center">
-            This faucet dispenses 0.3 MON every 36 hours, Connect your wallet to
+            This faucet dispenses 0.5 MON every 36 hours, Connect your wallet to
             proceed.
           </CardDescription>
         </CardHeader>
@@ -128,16 +128,16 @@ export default function Home() {
           {!isConnected && <CustomConnectButton />}
 
           {/* STEP 2: SIGN MESSAGE */}
-          {isConnected && currentStep === 1 && (
+          {/* {isConnected && currentStep === 1 && (
             <div className="text-center mt-4">
               <Button onClick={handleSignMessage} className="w-full">
                 <Wallet className="mr-2 h-4 w-4" /> Sign Message
               </Button>
             </div>
-          )}
+          )} */}
 
           {/* STEP 3: FOLLOW TWITTER */}
-          {isConnected && currentStep === 2 && (
+          {isConnected && currentStep === 1 && (
             <div className="text-center mt-4">
               <Link
                 href="https://twitter.com/velkan_gst"
@@ -159,7 +159,7 @@ export default function Home() {
           )}
 
           {/* STEP 4: CLAIM MON */}
-          {isConnected && currentStep === 3 && twitterFollowed && (
+          {isConnected && currentStep === 2 && twitterFollowed && (
             <Button onClick={handleClaim} className="w-full">
               {isClaiming ? (
                 <span className="flex items-center gap-2">
